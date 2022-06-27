@@ -9,41 +9,26 @@ canvas.width = 600;
 canvas.height = 400;
 
 var map = new Map();
-var player = new Player( map.scale + 20, map.scale + 20, Math.PI/3);
+var player = new Player( map.scale + 20, map.scale + 20, Math.PI/3, map);
 var controls = new Controls(player, map);
 
 var playerMapX;
 var playerMapY;
 
-// graphics
-const WALLS = [];
+var wallSprite = new Image();
+wallSprite.src = "./assets/walls_2.png";
 
-// load wall textures
-for (var filename = 0; filename < 14; filename++) {
-  var image = document.createElement('img');
-  image.src = 'assets/walls/' + filename + '.png';
-  WALLS.push(image);
-}
+var backSprite = new Image();
+backSprite.src = "./assets/back.png";
 
 function gameLoop() {
 
-  // update player position
-  var playerOffsetX = Math.sin(player.angle) * map.speed;
-  var playerOffsetY = Math.cos(player.angle) * map.speed;
-  var mapTargetX = Math.floor(player.y / map.scale) * map.size + Math.floor((player.x + playerOffsetX * player.moveX * 10) / map.scale);
-  var mapTargetY = Math.floor((player.y + playerOffsetY * player.moveY * 10) / map.scale) * map.size + Math.floor(player.x / map.scale);
-
-  if (player.moveX && map.bluePrint[mapTargetX] == 0) player.x += playerOffsetX * player.moveX;
-  if (player.moveY && map.bluePrint[mapTargetY] == 0) player.y += playerOffsetY * player.moveY;
-  if (player.moveAngle) player.angle += 0.03 * player.moveAngle;
-
-  // calculate map.bluePrint & player offsets
+  player.update();
 
   playerMapX = (player.x / map.scale) * 5
   playerMapY = (player.y / map.scale) * 5
 
-  // draw floor and ceiling
-  ctx.drawImage(WALLS[0], 0, 0,canvas.width , canvas.height );
+  ctx.drawImage(backSprite, 0, 0,canvas.width , canvas.height );
 
   // raycasting
   var currentAngle = player.angle + player.FOV / 2;
@@ -106,17 +91,16 @@ function gameLoop() {
     depth *= Math.cos(player.angle - currentAngle);
     var wallHeight = Math.min(Math.floor(map.scale * 280 / (depth + 0.0001)), 50000);
 
-    // render textures
     ctx.drawImage(
-      WALLS[textureImage],
-      textureOffset,                                                       /* source image X offset */
-      0,                                                                   /* source image Y offset */
-      1,                                                                   /* source image width    */
-      64,                                                                  /* source image height   */
-      ray,                                                    /* target image X offset */
-      (canvas.height / 2 - Math.floor(wallHeight)),             /* target image Y offset */
-      1,                                                                   /* target image width    */
-      wallHeight *2,                                                          /* target image height   */
+      wallSprite,
+      textureOffset,
+      textureImage * 64,
+      1,
+      64,
+      ray,
+      (canvas.height / 2 - Math.floor(wallHeight)),
+      1,
+      wallHeight *2,
     );
 
     currentAngle -= player.FOV / canvas.width;
