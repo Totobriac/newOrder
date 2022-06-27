@@ -21,9 +21,8 @@ var fps_rate = '...';
 const MAP_SIZE = 32;
 const MAP_SCALE = 64;
 const MAP_RANGE = MAP_SCALE * MAP_SIZE;
-const MAP_SPEED = (MAP_SCALE / 2) / 10;
+const MAP_SPEED = (MAP_SCALE / 2) / 7;
 
-var showMap = false;
 
 var map = new Map();
 var player = new Player( MAP_SCALE + 20, MAP_SCALE + 20, Math.PI/3);
