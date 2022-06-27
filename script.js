@@ -1,3 +1,6 @@
+import { map } from "./map.js";
+import { drawSmallMap } from "./smallMap.js";
+
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
 
@@ -17,40 +20,7 @@ const MAP_SIZE = 32;
 const MAP_SCALE = 64;
 const MAP_RANGE = MAP_SCALE * MAP_SIZE;
 const MAP_SPEED = (MAP_SCALE / 2) / 10;
-var map = [
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2,
-  1, 0, 0, 0, 0, 0, 0, 0,14, 0, 0, 0, 0, 0, 2,14, 2, 0, 0, 0, 0, 0, 0, 0, 2,14, 2, 0, 0, 0, 0, 2,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2,
-  1, 0, 0, 0, 0, 0, 0, 0,14, 0, 0, 0, 0, 0, 2,14, 2, 0, 0, 0, 0, 0, 0, 0, 2,14, 2, 0, 0, 0, 0, 2,
-  4, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2,
-  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2,
-  1, 1, 1, 1,15, 0,15, 1, 1, 1, 1,15, 0,15, 1, 1, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 2,15, 0,15, 2,
-  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2,
-  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 2, 2,
-  1, 0, 0, 0, 0, 0, 0, 0,14, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 2, 2, 0, 2, 2,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 2,
-  1, 0, 0, 0, 0, 0, 0, 0,14, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 2,
-  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 2, 2, 2, 2, 2,
-  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2,
-  1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,15, 0,15, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-  1, 0, 0, 0, 1, 0, 0, 0, 1,11,11,14, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  1, 0, 0, 0, 1, 0, 0, 0, 1,12, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 0, 0, 1, 0, 0, 0, 1,11,11,14, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,14, 0, 0, 0, 0, 0, 0, 0, 1,
-  1,15, 0,15, 1,15, 0,15, 1, 1, 1,15, 0,15, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,14, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1,15, 0,15, 1, 1, 1,
-  6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,14, 0, 0, 0, 0, 0, 0, 0, 1,
-  9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,14, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,14, 0, 0, 0, 0, 0, 0, 0, 1,
-  6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,14, 3, 3, 0, 3, 0, 0, 1, 0, 0, 0, 1,15, 0,15, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 1, 0, 3, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 3, 1,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1,
-  1, 1, 1, 1, 7, 1, 6, 1, 9, 1, 6, 1, 7, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1,
-];
+
 var showMap = false;
 
 // player
@@ -60,6 +30,9 @@ var playerAngle = Math.PI / 3;
 var playerMoveX = 0;
 var playerMoveY = 0;
 var playerMoveAngle = 0;
+
+var playerMapX;
+var playerMapY;
 
 // handle user input
 document.onkeydown = function(event) {
@@ -126,8 +99,8 @@ function gameLoop() {
   
   // calculate map & player offsets
   
-  var playerMapX = (playerX / MAP_SCALE) * 5 
-  var playerMapY = (playerY / MAP_SCALE) * 5 
+  playerMapX = (playerX / MAP_SCALE) * 5 
+  playerMapY = (playerY / MAP_SCALE) * 5 
 
   // draw floor and ceiling
   context.drawImage(WALLS[0], 0, 0,canvas.width , canvas.height );
@@ -212,31 +185,7 @@ function gameLoop() {
   
   // draw map on left shift press
   if (showMap) { 
-    // draw 2D map
-    for (var row = 0; row < MAP_SIZE; row++) {
-      for (var col = 0; col < MAP_SIZE; col++) {
-        var square = row * MAP_SIZE + col;
-        if (map[square] != 0) {
-          var materialTexture  = map[square] > 13 ? 1 : map[square];
-          context.drawImage(WALLS[materialTexture], 0, 0, 64, 64,  col * 5, row * 5, 5, 5);
-        } else {
-          context.fillStyle = '#aaa';
-          context.fillRect( col * 5,  row * 5, 5, 5);
-        }
-      }
-    }
-    
-    // draw player on 2D map
-    context.fillStyle = 'Red';
-    context.beginPath();
-    context.arc(playerMapX, playerMapY, 2, 0, DOUBLE_PI);
-    context.fill();
-    context.strokeStyle = 'Red';
-    context.lineWidht = 1;
-    context.beginPath();
-    context.moveTo(playerMapX, playerMapY);
-    context.lineTo(playerMapX + Math.sin(playerAngle) * 5, playerMapY + Math.cos(playerAngle) * 5);
-    context.stroke();
+    drawSmallMap(context, WALLS); 
   }
   
     // infinite loop
@@ -246,3 +195,5 @@ function gameLoop() {
  
   
 } window.onload = function() { gameLoop(); }
+
+export { playerMapX, playerMapY, playerAngle };
