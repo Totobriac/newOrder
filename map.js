@@ -2,6 +2,10 @@ class Map {
   constructor() {
     this.bluePrint = map;
     this.dispMini = false;
+    this.size = 32;
+    this.scale = 64;
+    this.range = this.scale * this.size;
+    this.speed = (this.scale/2)/7;
   }
   showMini() {
     this.dispMini = true;
@@ -10,6 +14,11 @@ class Map {
     this.dispMini = false;
   }
 }
+// map.bluePrint
+const MAP_SIZE = 32;
+const MAP_SCALE = 64;
+const MAP_RANGE = MAP_SCALE * MAP_SIZE;
+const MAP_SPEED = (MAP_SCALE / 2) / 7;
 
 
 var map = [
