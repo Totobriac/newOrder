@@ -12,9 +12,6 @@ var map = new Map();
 var player = new Player( map.scale + 20, map.scale + 20, Math.PI/3, map);
 var controls = new Controls(player, map);
 
-var playerMapX;
-var playerMapY;
-
 var wallSprite = new Image();
 wallSprite.src = "./assets/walls_2.png";
 
@@ -24,9 +21,6 @@ backSprite.src = "./assets/back.png";
 function gameLoop() {
 
   player.update();
-
-  playerMapX = (player.x / map.scale) * 5
-  playerMapY = (player.y / map.scale) * 5
 
   ctx.drawImage(backSprite, 0, 0,canvas.width , canvas.height );
 
@@ -107,7 +101,7 @@ function gameLoop() {
   }
 
   if (map.dispMini) {
-    drawSmallMap(ctx, WALLS);
+    drawSmallMap(ctx, player);
   }
 
 }
@@ -119,4 +113,4 @@ function animate() {
 
 animate();
 
-export { playerMapX, playerMapY, player, map };
+export { player, map };

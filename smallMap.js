@@ -1,28 +1,26 @@
 import { map } from "./script.js";
-import { playerMapX, playerMapY, player} from "./script.js";
+import { player} from "./script.js";
 
 var MAP_SIZE = 32;
-const DOUBLE_PI = 2 * Math.PI;
 
+function drawSmallMap(ctx, player) {
+  var playerMapX = (player.x / map.scale) * 5
+  var playerMapY = (player.y / map.scale) * 5
 
-function drawSmallMap(ctx, WALLS) {
-  for (var row = 0; row < MAP_SIZE; row++) {
-    for (var col = 0; col < MAP_SIZE; col++) {
-      var square = row * MAP_SIZE + col;
-      if (map.bluePrint[square] != 0) {
-        var materialTexture  = map.bluePrint[square] > 13 ? 1 : map.bluePrint[square];
-        ctx.drawImage(WALLS[materialTexture], 0, 0, 64, 64,  col * 5, row * 5, 5, 5);
-      } else {
+  for (var row = 0; row < map.size; row++) {
+    for (var col = 0; col < map.size; col++) {
+      var square = row * map.size + col;
+      if (map.bluePrint[square] === 0) {
         ctx.fillStyle = '#aaa';
         ctx.fillRect( col * 5,  row * 5, 5, 5);
       }
     }
   }
-  
-  
+
+
   ctx.fillStyle = 'Red';
   ctx.beginPath();
-  ctx.arc(playerMapX, playerMapY, 2, 0, DOUBLE_PI);
+  ctx.arc(playerMapX, playerMapY, 2, 0, 2 * Math.PI);
   ctx.fill();
   ctx.strokeStyle = 'Red';
   ctx.lineWidht = 1;
